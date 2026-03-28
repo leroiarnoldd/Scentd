@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400;1,700&family=DM+Mono:wght@400&display=swap');
+
+  body {
+    width: 1200px;
+    height: 630px;
+    overflow: hidden;
+    background: #0a0908;
+    font-family: 'DM Mono', monospace;
+    position: relative;
+  }
+
+  /* Grain texture */
+  body::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.05'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  /* Radial glow — centre */
+  .glow-centre {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 900px;
+    height: 900px;
+    background: radial-gradient(circle, rgba(201,168,108,0.07) 0%, transparent 60%);
+  }
+
+  /* Radial glow — top right */
+  .glow-tr {
+    position: absolute;
+    top: -200px;
+    right: -200px;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(201,168,108,0.05) 0%, transparent 65%);
+  }
+
+  /* Radial glow — bottom left */
+  .glow-bl {
+    position: absolute;
+    bottom: -200px;
+    left: -100px;
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(126,200,184,0.04) 0%, transparent 65%);
+  }
+
+  /* Decorative grid lines */
+  .grid-lines {
+    position: absolute;
+    inset: 0;
+  }
+  .grid-lines::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 0.5px;
+    background: linear-gradient(to bottom, transparent, rgba(201,168,108,0.08) 30%, rgba(201,168,108,0.08) 70%, transparent);
+  }
+  .grid-lines::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 0.5px;
+    background: linear-gradient(to right, transparent, rgba(201,168,108,0.06) 30%, rgba(201,168,108,0.06) 70%, transparent);
+  }
+
+  /* Corner ornaments */
+  .corner {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+  }
+  .corner svg { width: 100%; height: 100%; }
+  .corner-tl { top: 32px; left: 32px; }
+  .corner-tr { top: 32px; right: 32px; transform: rotate(90deg); }
+  .corner-bl { bottom: 32px; left: 32px; transform: rotate(-90deg); }
+  .corner-br { bottom: 32px; right: 32px; transform: rotate(180deg); }
+
+  /* Border frame */
+  .frame {
+    position: absolute;
+    inset: 24px;
+    border: 0.5px solid rgba(201,168,108,0.12);
+    border-radius: 4px;
+    pointer-events: none;
+  }
+
+  /* Main content */
+  .content {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 60px;
+    z-index: 5;
+  }
+
+  .eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: #7a6038;
+    margin-bottom: 28px;
+  }
+
+  .logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 96px;
+    font-weight: 700;
+    color: #f2ede5;
+    letter-spacing: -3px;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .logo em {
+    font-style: italic;
+    color: #c9a86c;
+  }
+
+  /* Thin gold rule */
+  .rule {
+    width: 320px;
+    height: 0.5px;
+    background: linear-gradient(to right, transparent, #c9a86c, transparent);
+    margin: 28px auto;
+  }
+
+  .tagline {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 400;
+    font-style: italic;
+    color: #9a8f82;
+    letter-spacing: 0.5px;
+    margin-bottom: 40px;
+    line-height: 1.5;
+  }
+
+  /* Pill badges */
+  .badges {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+  .badge {
+    padding: 8px 20px;
+    border-radius: 20px;
+    border: 0.5px solid rgba(201,168,108,0.25);
+    background: rgba(201,168,108,0.07);
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: #c9a86c;
+    text-transform: uppercase;
+  }
+  .badge.teal {
+    border-color: rgba(126,200,184,0.25);
+    background: rgba(126,200,184,0.06);
+    color: #7ec8b8;
+  }
+
+  /* Diamond ornament */
+  .diamond {
+    font-size: 13px;
+    color: rgba(201,168,108,0.4);
+  }
+
+  /* URL at bottom */
+  .url {
+    position: absolute;
+    bottom: 44px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 2px;
+    color: #4a4238;
+    text-transform: uppercase;
+    z-index: 5;
+  }
+
+  /* Decorative large background text */
+  .bg-text {
+    position: absolute;
+    font-family: 'Playfair Display', serif;
+    font-size: 320px;
+    font-weight: 700;
+    font-style: italic;
+    color: rgba(201,168,108,0.025);
+    letter-spacing: -12px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    white-space: nowrap;
+    pointer-events: none;
+    z-index: 1;
+    line-height: 1;
+  }
+</style>
+</head>
+<body>
+  <div class="glow-centre"></div>
+  <div class="glow-tr"></div>
+  <div class="glow-bl"></div>
+  <div class="grid-lines"></div>
+  <div class="frame"></div>
+
+  <!-- Ghost background word -->
+  <div class="bg-text">scentd</div>
+
+  <!-- Corner ornaments -->
+  <div class="corner corner-tl">
+    <svg viewBox="0 0 40 40" fill="none">
+      <path d="M2 38 L2 2 L38 2" stroke="rgba(201,168,108,0.35)" stroke-width="0.75"/>
+    </svg>
+  </div>
+  <div class="corner corner-tr">
+    <svg viewBox="0 0 40 40" fill="none">
+      <path d="M2 38 L2 2 L38 2" stroke="rgba(201,168,108,0.35)" stroke-width="0.75"/>
+    </svg>
+  </div>
+  <div class="corner corner-bl">
+    <svg viewBox="0 0 40 40" fill="none">
+      <path d="M2 38 L2 2 L38 2" stroke="rgba(201,168,108,0.35)" stroke-width="0.75"/>
+    </svg>
+  </div>
+  <div class="corner corner-br">
+    <svg viewBox="0 0 40 40" fill="none">
+      <path d="M2 38 L2 2 L38 2" stroke="rgba(201,168,108,0.35)" stroke-width="0.75"/>
+    </svg>
+  </div>
+
+  <div class="content">
+    <div class="eyebrow">The Fragrance Community</div>
+    <div class="logo">sc<em>e</em>ntd</div>
+    <div class="rule"></div>
+    <div class="tagline">Your nose belongs here.</div>
+    <div class="badges">
+      <div class="badge">Rate</div>
+      <div class="diamond">◆</div>
+      <div class="badge">Vote</div>
+      <div class="diamond">◆</div>
+      <div class="badge teal">Trade</div>
+      <div class="diamond">◆</div>
+      <div class="badge">Discover</div>
+    </div>
+  </div>
+
+  <div class="url">scentd.app</div>
+</body>
+</html>
